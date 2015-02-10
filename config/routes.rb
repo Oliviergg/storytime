@@ -32,12 +32,16 @@
   end
 
   # pages at routes like /about
-  constraints ->(request){ (request.params[:id] != Storytime.home_page_path) && Storytime::Page.friendly.exists?(request.params[:id]) } do
-    resources :pages, only: :show, path: "/"
+  constraints ->(request){
+    page_name = request.params[:id].gsub("/","_",)
+    (page_name != Storytime.home_page_path) && Storytime::Page.friendly.exists?(page_name)
+  } do
+    get "/*id", to: "pages#show"
   end
 
   resources :posts, path: "(/:component_1(/:component_2(/:component_3)))/", only: :show, constraints: ->(request){ request.params[:component_1] != "assets" }
   resources :posts, only: nil do
     resources :comments, only: [:create, :destroy]
   end
+
 end
