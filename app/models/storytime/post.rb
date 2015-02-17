@@ -14,6 +14,9 @@ module Storytime
     has_many :tags, through: :taggings
     has_many :comments
 
+    belongs_to :language
+    belongs_to :post_category
+
     has_one :autosave, as: :autosavable, dependent: :destroy, class_name: "Autosave"
 
     attr_accessor :preview, :published_at_date, :published_at_time, :send_subscriber_email

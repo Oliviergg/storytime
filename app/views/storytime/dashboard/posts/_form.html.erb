@@ -5,10 +5,19 @@
   <%= hidden_field_tag 'post[published]', @post.published_at.nil? ? 0 : 1 if Pundit.policy(current_user, @post).publish? %>
 
   <div class="post_field post_title">
+    <%= f.association :language, autofocus: true %>
+  </div>
+
+  <div class="post_field post_title">
+    <%= f.association :post_category %>
+  </div>
+
+
+  <div class="post_field post_title">
     <small>
       <div class="pull-right" id="title_character_limit" data-limit="<%= Storytime.post_title_character_limit %>"></div>
     </small>
-    <%= f.input :title, autofocus: true %>
+    <%= f.input :title, autofocus: false %>
   </div>
   
 
@@ -132,7 +141,7 @@
   <div class="post_actions">
     <% if @post.persisted? %>
       <%= link_to 'Delete',  url_for([:dashboard, @post]),  method: :delete, data: { confirm: t('common.are_you_sure_you_want_to_delete', resource_name: @post.human_name) }, class: "btn btn-danger" %>
-      <%= link_to "Preview", post_path(@post, preview: true), class: "btn btn-info", id: "preview_post", target: "_blank" %>
+      <%= link_to "Preview", post_path(@post,locale:@post.language.lang, preview: true), class: "btn btn-info", id: "preview_post", target: "_blank" %>
     <% else %>
       <button id="preview_post" class="btn btn-info">Preview</button>
     <% end %>
