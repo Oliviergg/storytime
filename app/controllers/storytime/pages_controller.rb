@@ -5,8 +5,6 @@ module Storytime
     before_action :ensure_site, unless: ->{ params[:controller] == "storytime/dashboard/sites" }
 
     def show
-      lang = params[:id].match(/^fr|en/)
-      I18n.locale = lang[0] unless lang.nil?
       @page = if request.path == "/"
         Page.published.find @site.root_post_id 
       elsif params[:preview]
@@ -15,10 +13,10 @@ module Storytime
         page.preview = true
         page
       else
-        Page.published.friendly.find(params[:id].gsub("/","_"))
+        Page.published.friendly.find(params[:id])
       end
       
-      if params[:preview].nil? && ((params[:id].gsub("/","_") != @page.slug) && (request.path != "/"))
+      if params[:preview].nil? && ((params[:id] != @page.slug) && (request.path != "/"))
         return redirect_to @page, :status => :moved_permanently
       end
 
