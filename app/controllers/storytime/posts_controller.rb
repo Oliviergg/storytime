@@ -5,11 +5,15 @@ module Storytime
     before_action :ensure_site, unless: ->{ params[:controller] == "storytime/dashboard/sites" }
 
     def index
-      @posts = if params[:post_type]
+      @posts = if params[:post_category]
+        category = PostCategory.find_by_slug(params[:post_category])
+        @title = category.name
+        BlogPost.where(post_category:category).all
+      elsif params[:post_type]
         klass = Storytime.post_types.find{|post_type| post_type.constantize.type_name == params[:post_type].singularize }
         klass.constantize.all
       else
-        Post.primary_feed
+        BlogPost.primary_feed
       end
       
       @posts = Storytime.search_adapter.search(params[:search], get_search_type) if (params[:search] && params[:search].length > 0)
@@ -64,7 +68,7 @@ module Storytime
         begin
           if Object.const_defined?("Storytime::#{type.camelize}")
             "Storytime::#{type.camelize}".constantize
-          elsif Object.const_defined?("#{type.camelize}")
+          elsif Object.const_defined?("#{type_name.camelize}")
             type.camelize.constantize
           else
             Storytime::Post
