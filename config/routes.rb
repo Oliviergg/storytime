@@ -6,7 +6,7 @@
   namespace :dashboard, :path => Storytime.dashboard_namespace_path do
     get "/", to: "posts#index"
     resources :sites, only: [:new, :edit, :update, :create]
-    resources :posts, except: [:show] do
+    resources :posts do
       resources :autosaves, only: [:create]
     end
     resources :snippets, except: [:show]
@@ -24,7 +24,12 @@
   get 'tags/:tag', to: 'posts#index', as: :tag
 
   get Storytime.home_page_path, Storytime.home_page_route_options
-  resources :posts, { only: :index }.merge(Storytime.post_index_path_options)
+  # resources :posts, { only: :index }.merge(Storytime.post_index_path_options)
+
+  scope "/(:locale)", :locale => /en|fr/ do 
+    resources :posts, path:"/blog/:post_category", only: :index
+    resources :posts, path:"/blog", only: :index
+  end
 
   # index page for post types that are excluded from primary feed
   constraints ->(request){ Storytime.post_types.any?{|type| type.constantize.type_name.pluralize == request.path.gsub("/", "") } } do
@@ -32,16 +37,19 @@
   end
 
   # pages at routes like /about
-  constraints ->(request){
-    page_name = request.params[:id].gsub("/","_",)
-    (page_name != Storytime.home_page_path) && Storytime::Page.friendly.exists?(page_name)
-  } do
-    get "/*id", to: "pages#show"
+  scope "/(:locale)", :locale => /en|fr/ do 
+    constraints ->(request){
+      page_name = request.params[:id]
+      (page_name != Storytime.home_page_path) && Storytime::Page.friendly.exists?(page_name)
+    } do
+      get "/:category/:id", to: "pages#show"
+    end
   end
-
-  resources :posts, path: "(/:component_1(/:component_2(/:component_3)))/", only: :show, constraints: ->(request){ request.params[:component_1] != "assets" }
-  resources :posts, only: nil do
-    resources :comments, only: [:create, :destroy]
+  
+  scope "/(:locale)", :locale => /en|fr/, constraints: ->(request){ request.params[:component_1] != "assets" } do
+    resources :posts, path: "(/:component_1(/:component_2(/:component_3)))/", only: :show, constraints: ->(request){ request.params[:component_1] != "assets" }
+    resources :posts, only: nil do
+      resources :comments, only: [:create, :destroy]
+    end
   end
-
 end
