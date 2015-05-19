@@ -16,7 +16,7 @@ module Storytime
 
       def new
         @post = new_post
-        @post.langage = Storytime::Language.first
+        @post.language = Storytime::Language.first
         authorize @post
       end
 
