@@ -13,7 +13,7 @@ module Storytime
         klass = Storytime.post_types.find{|post_type| post_type.constantize.type_name == params[:post_type].singularize }
         klass.constantize.all
       else
-        BlogPost.primary_feed
+        BlogPost.where_lang(I18n.locale).primary_feed
       end
       
       @posts = Storytime.search_adapter.search(params[:search], get_search_type) if (params[:search] && params[:search].length > 0)

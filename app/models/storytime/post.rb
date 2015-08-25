@@ -65,9 +65,14 @@ module Storytime
         end
       end
 
-      def tag_counts
-        Storytime::Tag.select("storytime_tags.*, count(storytime_taggings.tag_id) as count").joins(:taggings).group("storytime_tags.id")
-
+      def tag_counts(lang:nil)
+        req = Storytime::Tag.select("storytime_tags.*, count(storytime_taggings.tag_id) as count")
+        if lang.nil?
+          req.joins(:taggings).group("storytime_tags.id")
+        else
+          language_id = Language.find_by_lang(lang)
+          req.joins(:taggings,:posts).where(storytime_posts:{language_id:language_id}).group("storytime_tags.id")
+        end
         #Tagging.group("storytime_taggings.tag_id").includes(:tag)
       end
 
