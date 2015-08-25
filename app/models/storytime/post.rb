@@ -32,6 +32,7 @@ module Storytime
     before_save :set_published_at
 
     scope :primary_feed, ->{ where(type: primary_feed_types) }
+    scope :where_lang,  ->(lang) { joins(:language).where(storytime_languages:{lang:lang})}
 
     class << self
       def policy_class
