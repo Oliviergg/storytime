@@ -99,6 +99,12 @@ module Storytime
       snippet.nil? ? "" : snippet.content.html_safe
     end
 
+    def snippet_lang(name,lang)
+      snippet = Storytime::Snippet.find_by(language_id: Storytime::Language.find_by(lang:lang),name: name)
+      snippet.nil? ? "" : snippet.content.html_safe
+    end
+
+
     def home_page_route_options
       site = Storytime::Site.first if ActiveRecord::Base.connection.table_exists? 'storytime_sites'
 

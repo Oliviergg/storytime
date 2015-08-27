@@ -1,6 +1,11 @@
 <%= simple_form_for [:dashboard, @snippet] do |f| %>
   <%= f.error_notification %>
-  <%= f.input :name, autofocus: true %>
+
+  <div class="post_field post_title">
+    <%= f.association :language, autofocus: true %>
+  </div>
+
+  <%= f.input :name %>
   <%= f.input :content, as: :text, input_html: { rows: 20, class: "summernote" } %>
 
   <div class="actions">

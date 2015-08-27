@@ -37,7 +37,7 @@ module Storytime
     end
 
     def permitted_attributes
-      [:name, :content]
+      [:name, :content, :language_id]
     end
   end
 end

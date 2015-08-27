@@ -8,7 +8,7 @@ module Storytime
       respond_to :json, only: :destroy
 
       def index
-        @users = Storytime.user_class.page(params[:page]).per(20)
+        @users = Storytime.user_class.where.not(storytime_role_id:nil).page(params[:page]).per(20)
         authorize @users
       end
 

@@ -10,7 +10,7 @@
     <ul class="dashboard-list">
       <% @snippets.each do |snippet| %>
         <li id="snippet_<%= snippet.id %>" class="<%= 'active' if current_page?(url_for([:edit, :dashboard, snippet])) %>">
-          <%= link_to snippet.name, [:edit, :dashboard, snippet], page_number: params[:page_number] %>
+          <%= link_to "#{snippet.language.lang} #{snippet.name}", [:edit, :dashboard, snippet], page_number: params[:page_number] %>
         </li>
       <% end %>
     </ul>

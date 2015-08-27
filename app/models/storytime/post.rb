@@ -27,6 +27,10 @@ module Storytime
     validates :user, presence: true
     validates :type, inclusion: { in: Storytime.post_types }
 
+    validates :language_id, presence: true
+    validates :post_category_id, presence: true
+
+
     before_validation :populate_excerpt_from_content
     before_save :sanitize_content
     before_save :set_published_at
