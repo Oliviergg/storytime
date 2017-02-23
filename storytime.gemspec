@@ -26,13 +26,14 @@ Gem::Specification.new do |s|
   s.add_dependency "jquery-rails", ">= 3.0"
   s.add_dependency "simple_form", ">= 3.0"
   s.add_dependency "friendly_id", ">= 5.0"
-  s.add_dependency "fog", ">= 1.18"
+  # s.add_dependency "fog", ">= 1.18"
+  s.add_dependency "fog-aws", ">= 1.18"
   s.add_dependency "carrierwave", ">= 0.9"
   s.add_dependency "mini_magick", ">= 3.7"
   s.add_dependency "nokogiri", ">= 1.6"
   s.add_dependency "font-awesome-sass", ">= 4.0.3"
   s.add_dependency "jquery-ui-rails", "~> 5.0"
-  
+
   s.add_development_dependency "devise", "~> 3.2"
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"
@@ -49,5 +50,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "better_errors"
   s.add_development_dependency "binding_of_caller"
   s.add_development_dependency "launchy"
-  
+
 end
