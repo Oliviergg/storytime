@@ -6,7 +6,8 @@ require 'jbuilder'
 require 'kaminari'
 require 'simple_form'
 require 'friendly_id'
-require 'fog/aws/storage'
+# require 'fog/aws/storage'
+require 'fog/aws'
 require 'carrierwave'
 require 'nokogiri'
 require 'font-awesome-sass'
@@ -26,7 +27,7 @@ module Storytime
     initializer "storytime.controller_helpers" do
       ActiveSupport.on_load(:action_controller) do
         include Storytime::ControllerHelpers
-        
+
         helper Storytime::SubscriptionsHelper
       end
     end
@@ -47,7 +48,7 @@ module Storytime
         else
           config.storage = :file
         end
-        
+
         config.enable_processing = !Rails.env.test?
       end
     end
