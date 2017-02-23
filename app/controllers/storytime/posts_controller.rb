@@ -15,12 +15,12 @@ module Storytime
       else
         BlogPost.where_lang(I18n.locale).primary_feed
       end
-      
+
       @posts = Storytime.search_adapter.search(params[:search], get_search_type) if (params[:search] && params[:search].length > 0)
 
       @posts = @posts.tagged_with(params[:tag]) if params[:tag]
-      @posts = @posts.published.order(published_at: :desc).page(params[:page])
-      
+      @posts = @posts.published.order(published_at: :desc).page(params[:page]).per(10)
+
       respond_to do |format|
         format.atom
         format.html
@@ -38,9 +38,9 @@ module Storytime
       end
 
       authorize @post
-      
+
       # content_for :title, "#{@site.title} | #{@post.title}"
-      
+
       if params[:preview].nil? && ((@site.post_slug_style != "post_id") && (params[:id] != @post.slug))
         return redirect_to @post, :status => :moved_permanently
       end
