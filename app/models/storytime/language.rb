@@ -7,7 +7,8 @@ module Storytime
   	end
 
   	def self.regexp
-  		@_regexp ||= /#{Storytime::Language.all.map(&:lang).join("|")}/
+  		@_regexp ||= /fr|en|de|it|es|pt/
+  		 # /#{Storytime::Language.all.map(&:lang).join("|")}/
   	end
   end
 end
