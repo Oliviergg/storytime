@@ -1,10 +1,6 @@
   <div class="post_field post_title">
-    <small>
-      <div class="pull-right" id="title_character_limit" data-limit="<%= Storytime.post_title_character_limit %>"></div>
-    </small>
+    <small><div class="pull-right" id="title_character_limit" data-limit="<%= Storytime.post_title_character_limit %>"></div></small>
     <%= f.input :html_title, autofocus: false %>
   </div>
 
-  <div class="post_field post_title">
-    <%= f.input :html_description, autofocus: false %>
-  </div>
+  <div class="post_field post_title"><%= f.input :html_description, autofocus: false %></div>

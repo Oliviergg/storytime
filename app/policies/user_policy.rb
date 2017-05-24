@@ -35,4 +35,3 @@ class UserPolicy
     manage?
   end
 end
-

@@ -16,12 +16,11 @@ module Storytime
         render :show
       end
 
-    private
+      private
 
       def import_params
         params.require(:import).permit(:file)
       end
-
     end
   end
 end

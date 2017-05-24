@@ -2,10 +2,10 @@ class Storytime::ApplicationController < ApplicationController
   layout Storytime.layout || "storytime/application"
 
   # include Storytime::Concerns::ControllerContentFor
-  
+
   include Pundit
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-  
+
   helper :all
 
   if Storytime.user_class_symbol != :user
@@ -42,13 +42,14 @@ class Storytime::ApplicationController < ApplicationController
     end
   end
 
-private
+  private
+
   def ensure_site
     redirect_to new_dashboard_site_url unless devise_controller? || @site = Storytime::Site.first
   end
-  
+
   def user_not_authorized
-    flash[:error] = "You are not authorized to perform this action."
-    redirect_to(request.referrer || storytime_root_path)
+    flash[:error] = 'You are not authorized to perform this action.'
+    redirect_to(request.referrer || '/')
   end
 end
