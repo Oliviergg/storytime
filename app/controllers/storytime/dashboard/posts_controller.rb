@@ -16,7 +16,9 @@ module Storytime
 
       def new
         @post = new_post
-        @post.language = Storytime::Language.first
+        @post.language = Storytime::Language.find_by(lang: I18n.locale)
+        @post.post_category = Storytime::PostCategory.find_by(slug: 'air-indemnite')
+
         authorize @post
       end
 
@@ -38,11 +40,11 @@ module Storytime
         authorize @post
 
         if @post.save
-          @post.create_autosave(post_params.slice(:draft_content)) if params[:preview] == 'true'
+          @post.create_autosave(post_params.slice(:draft_content)) if params[:preview] === 'true'
 
-          publish if post_params['published'] == '1'
+          publish if post_params['published'] === '1'
 
-          opts = params[:preview] == 'true' ? { preview: true } : {}
+          opts = params[:preview] === 'true' ? { preview: true } : {}
 
           redirect_to edit_dashboard_post_path(@post, opts), notice: I18n.t('flash.posts.create.success')
         else
@@ -58,7 +60,7 @@ module Storytime
         if @post.update(post_params)
           @post.autosave.destroy unless @post.autosave.nil?
 
-          publish if post_params['published'] == '1'
+          publish if post_params['published'] === '1'
 
           redirect_to [:edit, :dashboard, @post], notice: I18n.t('flash.posts.update.success')
         else
@@ -85,7 +87,7 @@ module Storytime
       end
 
       def new_post(attrs = nil)
-        post = if params[:action] == 'new'
+        post = if params[:action] === 'new'
           current_post_type.new
         else
           current_post_type.new(attrs)
@@ -106,7 +108,7 @@ module Storytime
         unless @post.published?
           @post.publish!
 
-          if post_params[:send_subscriber_email] == '1'
+          if post_params[:send_subscriber_email] === '1'
             @site.active_email_subscriptions.each do |subscription|
               Storytime::SubscriptionMailer.new_post_email(@post, subscription).deliver
             end
@@ -117,7 +119,7 @@ module Storytime
       def current_post_type
         @current_post_type ||= begin
           type_param = params[:type] || (params[:post] && params[:post].delete(:type))
-          matching_type = Storytime.post_types.find{|post_type| post_type.constantize.type_name == type_param }
+          matching_type = Storytime.post_types.find{|post_type| post_type.constantize.type_name === type_param }
           matching_type.nil? ? Storytime::BlogPost : matching_type.constantize
         end
       end
