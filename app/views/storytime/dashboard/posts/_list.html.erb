@@ -1,5 +1,5 @@
 <div id="list" class="pane">
-  <h3 class="heading"> 
+  <h3 class="heading">
     <%= post_list_title(current_post_type) %>
     <%= new_post_button(current_post_type) %>
   </h3>
@@ -19,7 +19,7 @@
       <% end %>
     </ul>
     <div class="pagination-wrapper">
-      <%= paginate @posts, param_name: "page_number" %>
+      <%= paginate @posts, param_name: 'page_number' %>
     </div>
   </div>
 </div>

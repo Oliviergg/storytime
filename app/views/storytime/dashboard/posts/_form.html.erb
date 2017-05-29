@@ -44,26 +44,24 @@
         <div class="panel-heading">
           <h4 class="panel-title">
             <span class="glyphicon glyphicon-picture"></span>
-            <a data-toggle="collapse" href="#post_featured_images"><%= t('dashboard.posts.featured_images') %></a>
+            <a data-toggle="collapse" href="#post_featured_images"><%= t('dashboard.posts.featured_images') %> (Best at 750px * 320px)</a>
           </h4>
         </div>
         <div id="post_featured_images" class="panel-collapse collapse">
           <div class="panel-body">
-            <div class="col-md-6">
-              <%= f.input :featured_media_id, as: :hidden, input_html: {id: 'featured_media_id'} %>
+            <%= f.input :featured_media_id, as: :hidden, input_html: {id: 'featured_media_id'} %>
 
-              <div class="featured_image_block center-block">
-                <span class="glyphicon glyphicon-picture select_featured_image" style="<% if @post.featured_media %>display: none<% end %>"></span>
-                <div id="featured_media_container" class="image_container">
-                  <%= image_tag @post.featured_media.file_url(:thumb), id: 'featured_media_image' if @post.featured_media %>
-                </div>
-                <div class="select_featured_image" <% if @post.featured_media %>style="display: none"<% end %>>
-                  <%= link_to 'Select Featured Image', '#', class: 'btn btn-primary', id: 'featured_media_button' %>
-                </div>
+            <div class="featured_image_block center-block">
+              <span class="glyphicon glyphicon-picture select_featured_image" style="<% if @post.featured_media %>display: none<% end %>"></span>
+              <div id="featured_media_container" class="image_container">
+                <%= image_tag @post.featured_media.file_url(:thumb), id: 'featured_media_image' if @post.featured_media %>
               </div>
-
-              <button type="button" class="btn btn-danger remove_featured_image center-block" <% unless @post.featured_media %>style="display: none"<% end %>><%= t('dashboard.posts.remove_image') %></button>
+              <div class="select_featured_image" <% if @post.featured_media %>style="display: none"<% end %>>
+                <%= link_to 'Select Featured Image', '#', class: 'btn btn-primary', id: 'featured_media_button' %>
+              </div>
             </div>
+
+            <button type="button" class="btn btn-danger remove_featured_image center-block" <% unless @post.featured_media %>style="display: none"<% end %>><%= t('dashboard.posts.remove_image') %></button>
           </div>
         </div>
       </div>

@@ -4,9 +4,7 @@
   <div class="scroll-y">
     <div class="padding no-content center">
       <h3><%= t('dashboard.posts.select_or_create', resource: current_post_type.type_name.titleize) %></h3>
-
       <h4 style="margin-top: 10px;">- OR - </h4>
-
       <%= link_to t('dashboard.posts.create_post'), storytime.new_dashboard_post_path(type: current_post_type.type_name), class: "btn btn-info", style: "margin-top: 0" %>
     </div>
   </div>
