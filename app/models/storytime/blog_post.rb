@@ -1,4 +1,4 @@
 module Storytime
-  class BlogPost < Post    
+  class BlogPost < Post
   end
 end

@@ -5,29 +5,27 @@ class Storytime.Dashboard.Editor
     mediaInstance = @initMedia()
     @initWysiwyg()
 
-    # Title character limit
-    title_character_limit = $("#title_character_limit").data("limit")
-    $("#title_character_limit").html title_character_limit - $("#post_title").val().length
+    # Init characters limit
+    self.setHtmlTitleCharacterLimit()
+    self.setHtmlDescriptionCharacterLimit()
+    self.setExcerptCharacterLimit()
+    self.setContentCharactersAndWordsCount()
 
-    $("#post_title").keypress((e) ->
-      e.preventDefault() if (e.which is 32 or e.which > 0x20) and ($("#post_title").val().length > title_character_limit - 1)
+    $('#post_html_title').keyup ->
+      self.setHtmlTitleCharacterLimit()
       return
-    ).keyup(->
-      $("#title_character_limit").html title_character_limit - $("#post_title").val().length
-      return
-    )
 
-    # Excerpt character limit
-    excerpt_character_limit = $("#excerpt_character_limit").data("limit")
-    $("#excerpt_character_limit").html excerpt_character_limit - $("#post_excerpt").val().length
+    $('#post_html_description').keyup ->
+      self.setHtmlDescriptionCharacterLimit()
+      return
 
-    $("#post_excerpt").keypress((e) ->
-      e.preventDefault() if (e.which is 32 or e.which > 0x20) and ($("#post_excerpt").val().length > excerpt_character_limit - 1)
+    $('#post_excerpt').keyup ->
+      self.setExcerptCharacterLimit()
       return
-    ).keyup(->
-      $("#excerpt_character_limit").html excerpt_character_limit - $("#post_excerpt").val().length
+
+    $('.note-editable').keyup ->
+      self.setContentCharactersAndWordsCount()
       return
-    )
 
     if $(".edit_post").length
       form = $(".edit_post").last()
@@ -44,7 +42,7 @@ class Storytime.Dashboard.Editor
 
       $("#preview_post").click(->
         form.data "unsaved-changes", false
-        
+
         $("<input name='preview' type='hidden' value='true'>").insertAfter($(".new_post").children().first())
         $(".new_post").submit()
         return
@@ -92,7 +90,27 @@ class Storytime.Dashboard.Editor
     addUnloadHandler(form)
     return
 
-  initMedia: ()->
+  setHtmlTitleCharacterLimit: () ->
+    $('#html-title-character-limit').html $('#html-title-character-limit').data('limit') - $('#post_html_title').val().length
+    return
+
+  setHtmlDescriptionCharacterLimit: () ->
+    $('#html-description-character-limit').html $('#html-description-character-limit').data('limit') - $('#post_html_description').val().length
+    return
+
+  setExcerptCharacterLimit: () ->
+    $('#excerpt-character-limit').html $('#excerpt-character-limit').data('limit') - $('#post_excerpt').val().length
+    return
+
+  setContentCharactersAndWordsCount: () ->
+    $('#content-characters-count').html this.unHTML($('.note-editable').html()).length
+    $('#content-words-count').html this.unHTML($('.note-editable').html()).split(' ').filter((n) -> return n != '').length
+    return
+
+  unHTML: (html) ->
+    return html.replace(/<(?:.|\n)*?>/gm, '').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&').replace(/&quot;/gi, '"').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
+
+  initMedia: () ->
     mediaInstance = new Storytime.Dashboard.Media()
     mediaInstance.initPagination()
     mediaInstance.initInsert()
@@ -107,7 +125,7 @@ class Storytime.Dashboard.Editor
 
   initWysiwyg: () ->
     self = @
-    
+
     # Summernote config and setup
     $(".summernote").summernote
       codemirror:
@@ -158,8 +176,8 @@ class Storytime.Dashboard.Editor
         $(".note-image-dialog").find(".row-fluid").append(
           "<div id='gallery_copy'>
             <h5>Gallery</h5>
-            <div id='media_gallery'>" + 
-              $("#media_gallery").html() + 
+            <div id='media_gallery'>" +
+              $("#media_gallery").html() +
             "</div>
           </div>")
       return
@@ -179,7 +197,7 @@ class Storytime.Dashboard.Editor
 
     form = if $(".edit_post").length then $(".edit_post").last() else $(".new_post").last()
     form.data "unsaved-changes", false
- 
+
     $.ajax(
       type: "POST"
       url: "#{dashboard_namespace}/posts/#{post_id}/autosaves"

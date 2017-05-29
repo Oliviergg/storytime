@@ -6,35 +6,46 @@
 
   <hr>
 
-  <div class="post_field post_title"><%= f.association :language, autofocus: true, selected: @post.language_id %></div>
-  <div class="post_field post_title"><%= f.association :post_category, selected: @post.post_category_id %></div>
+  <%= f.association :language, autofocus: true, selected: @post.language_id %>
+  <%= f.association :post_category, selected: @post.post_category_id %>
 
   <hr>
 
-  <div class="post_field post_title">
-    <small><div class="pull-right" id="title_character_limit" data-limit="<%= Storytime.post_title_character_limit %>"></div></small>
+  <div>
+    <small><div class="pull-right"><span id="html-title-character-limit" data-limit="<%= Storytime::BlogPost.html_title_character_limit %>"></span> characters left</div></small>
     <%= f.input :html_title, label: 'Title (HTML)', autofocus: false %>
   </div>
 
-  <div class="post_field post_title"><%= f.input :html_description, label: 'Description (HTML)', autofocus: false %></div>
+  <div>
+    <small><div class="pull-right"><span id="html-description-character-limit" data-limit="<%= Storytime::BlogPost.html_description_character_limit %>"></span> characters left</div></small>
+    <%= f.input :html_description, label: 'Description (HTML)', autofocus: false %>
+  </div>
 
   <hr>
 
-  <div class="post_field post_title">
-    <small><div class="pull-right" id="title_character_limit" data-limit="<%= Storytime.post_title_character_limit %>"></div></small>
+  <div>
+    <small><div class="pull-right" id="description_html_character_limit"></div></small>
     <%= f.input :title, label: 'Title <H1 />', autofocus: false %>
   </div>
 
-  <div class="post_field post_excerpt">
-    <small><div class="pull-right" id="excerpt_character_limit" data-limit="<%= Storytime.post_excerpt_character_limit %>"></div></small>
+  <div>
+    <small><div class="pull-right" id="title_alternative_character_limit"></div></small>
+    <%= f.input :title_alternative, label: 'Alternative title', autofocus: false %>
+  </div>
+
+  <div>
+    <small><div class="pull-right"><span id="excerpt-character-limit" data-limit="<%= Storytime::BlogPost.excerpt_character_limit %>"></span> characters left</div></small>
     <%= f.input :excerpt, required: false %>
   </div>
 
-  <div class="post_field post_content"><%= f.input :draft_content, as: :text, input_html: {rows: 20, class: 'summernote'}, label: 'Content' %></div>
+  <div>
+    <small><div class="pull-right"><span id="content-characters-count"></span> characters, <span id="content-words-count"></span> words</div></small>
+    <%= f.input :draft_content, as: :text, input_html: {rows: 20, class: 'summernote'}, label: 'Content' %>
+  </div>
 
   <hr>
 
-  <div class="post_field post_tags"><%= f.association :tags, input_html: {name: 'post[tag_list][]', class: 'chosen-select', multiple: true} %></div>
+  <%= f.association :tags, input_html: {name: 'post[tag_list][]', class: 'chosen-select', multiple: true} %>
 
   <hr>
 

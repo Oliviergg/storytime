@@ -4,37 +4,42 @@ module Storytime
     include ActionView::Helpers::SanitizeHelper
 
     extend FriendlyId
-    friendly_id :slug_candidates, use: [:history]
 
-    belongs_to :user, class_name: Storytime.user_class
-    belongs_to :featured_media, class_name: 'Media'
-
-    has_many :taggings, dependent: :destroy
-    has_many :tags, through: :taggings
-    has_many :comments
-
-    belongs_to :language
-    belongs_to :post_category
-
-    has_one :autosave, as: :autosavable, dependent: :destroy, class_name: 'Autosave'
+    HTML_TITLE_CHARACTER_LIMIT = 70
+    HTML_DESCRIPTION_CHARACTER_LIMIT = 160
+    EXCERPT_CHARACTER_LIMIT = Storytime.post_excerpt_character_limit
 
     attr_accessor :preview, :published_at_date, :published_at_time, :send_subscriber_email
 
-    validates_presence_of :title, :draft_content
-    validates :title, length: {in: 1 .. Storytime.post_title_character_limit}
-    validates :excerpt, length: {in: 0 .. Storytime.post_excerpt_character_limit}
-    validates :user, presence: true
-    validates :type, inclusion: {in: Storytime.post_types}
+    friendly_id :slug_candidates, use: [:history]
 
-    validates :language_id, presence: true
-    validates :post_category_id, presence: true
+    belongs_to :featured_media, class_name: 'Media'
+    belongs_to :language
+    belongs_to :post_category
+    belongs_to :user, class_name: Storytime.user_class
+
+    has_one :autosave, as: :autosavable, dependent: :destroy, class_name: 'Autosave'
+
+    has_many :comments
+    has_many :taggings, dependent: :destroy
+    has_many :tags, through: :taggings
 
     before_validation :populate_excerpt_from_content
+    before_validation :populate_title_alternative_from_title
+
+    validates :excerpt, length: {in: 0 .. EXCERPT_CHARACTER_LIMIT}
+    validates :language_id, presence: true
+    validates :post_category_id, presence: true
+    validates :title, length: {in: 1 .. Storytime.post_title_character_limit}
+    validates :type, inclusion: {in: Storytime.post_types}
+    validates :user, presence: true
+    validates_presence_of :title, :draft_content
+
     before_save :sanitize_content
     before_save :set_published_at
 
     scope :primary_feed, -> {where(type: primary_feed_types)}
-    scope :where_lang,  -> (lang) {joins(:language).where(storytime_languages: {lang: lang})}
+    scope :where_lang, -> (lang) {joins(:language).where(storytime_languages: {lang: lang})}
 
     class << self
       def policy_class
@@ -42,13 +47,15 @@ module Storytime
       end
 
       def primary_feed_types
-        Storytime.post_types.map {|post_type| post_type.constantize}.select do |post_type|
+        Storytime.post_types.map do |post_type|
+          post_type.constantize
+        end.select do |post_type|
           post_type.included_in_primary_feed?
         end
       end
 
       def human_name
-        @human_name ||= type_name.humanize.split(' ').map(&:capitalize).join(' ')
+        @human_name ||= type_name.humanize.split(' ').map(& :capitalize).join(' ')
       end
 
       def find_preview(id)
@@ -73,7 +80,7 @@ module Storytime
           req.joins(:taggings).group('storytime_tags.id')
         else
           language_id = Language.find_by_lang(lang)
-          req.joins(:taggings,:posts).where(storytime_posts: {language_id: language_id}).group('storytime_tags.id')
+          req.joins(:taggings, :posts).where(storytime_posts: {language_id: language_id}).group('storytime_tags.id')
         end
       end
 
@@ -107,12 +114,16 @@ module Storytime
         else
           Storytime::Tag.find(n)
         end
-      end.delete_if {|x| x == ''}
+      end.delete_if {|x| x === ''}
     end
 
     def populate_excerpt_from_content
-      self.excerpt = (content || draft_content).slice(0 .. Storytime.post_excerpt_character_limit) if excerpt.blank?
+      self.excerpt = (content || draft_content).slice(0 .. EXCERPT_CHARACTER_LIMIT) if excerpt.blank?
       self.excerpt = strip_tags(self.excerpt)
+    end
+
+    def populate_title_alternative_from_title
+      self.title_alternative = self.title if title_alternative.blank?
     end
 
     def show_comments?
@@ -132,8 +143,7 @@ module Storytime
     end
 
     def should_generate_new_friendly_id?
-      slug = nil if slug == ''
-      slug_changed? || (slug.nil? && published_at_changed? && published_at_change.first.nil?)
+      slug_changed? || (slug.blank? && published_at_changed? && published_at_change.first.nil?)
     end
 
     def sanitize_content
@@ -150,6 +160,18 @@ module Storytime
           DateTime.parse "#{self.published_at_date} #{self.published_at_time}"
         end
       end
+    end
+
+    def self.html_title_character_limit
+      HTML_TITLE_CHARACTER_LIMIT
+    end
+
+    def self.html_description_character_limit
+      HTML_DESCRIPTION_CHARACTER_LIMIT
+    end
+
+    def self.excerpt_character_limit
+      EXCERPT_CHARACTER_LIMIT
     end
   end
 end

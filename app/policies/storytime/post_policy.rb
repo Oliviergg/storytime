@@ -83,6 +83,7 @@ module Storytime
         :html_title,
         :html_description,
         :title,
+        :title_alternative,
         :draft_content,
         :draft_version_id,
         :excerpt,
