@@ -38,6 +38,7 @@ module Storytime
     before_save :sanitize_content
     before_save :set_published_at
 
+    scope :last_published, -> (count) {where.not(published_at: nil).order(:published_at).last(count).reverse}
     scope :primary_feed, -> {where(type: primary_feed_types)}
     scope :where_lang, -> (lang) {joins(:language).where(storytime_languages: {lang: lang})}
 
