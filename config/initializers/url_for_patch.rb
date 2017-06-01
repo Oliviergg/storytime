@@ -11,9 +11,9 @@ module ActionDispatch
           post = options[key]
 
           if post.is_a?(Storytime::Page)
-            options[:component_1] = if post.post_category.nil? 
-                                     nil 
-                                   else 
+            options[:component_1] = if post.post_category.nil?
+                                     nil
+                                   else
                                     post.post_category.slug
                                   end
             options[:id] = post
@@ -21,15 +21,15 @@ module ActionDispatch
 
             case site.post_slug_style
             when "default"
-              if post.post_category.nil? 
+              if post.post_category.nil?
                 options[:component_1] = "blog"
                 options[:id] = post
-               else 
+               else
                 options[:component_1] = "blog"
                 options[:component_2] = post.post_category.slug
                 options[:id] = post
               end
-            when "day_and_name" 
+            when "day_and_name"
               date = post.created_at.to_date
               options[:component_1] = date.strftime("%Y") # 4 digit year
               options[:component_2] = date.strftime("%m") # 2 digit month
@@ -47,7 +47,7 @@ module ActionDispatch
           end
         end
       end
-      
+
       if Rails::VERSION::MINOR >= 2
         def url_for_with_storytime(options, route_name = nil, url_strategy = UNKNOWN)
           handle_storytime_urls(options)

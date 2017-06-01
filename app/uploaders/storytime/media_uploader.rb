@@ -19,7 +19,7 @@ module Storytime
     # Blog's posts' headers' images' resize
 
     version :blog_post_header do
-      process resize_to_fill: [750, 250]
+      process resize_to_fill: [750, 320]
     end
   end
 end

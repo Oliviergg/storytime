@@ -8,9 +8,11 @@ module Storytime
       @posts = if params[:post_category]
         category = PostCategory.find_by_slug(params[:post_category])
         @title = category.name
-        BlogPost.where(post_category:category).all
+        BlogPost.where(post_category: category).all
       elsif params[:post_type]
-        klass = Storytime.post_types.find{|post_type| post_type.constantize.type_name == params[:post_type].singularize }
+        klass = Storytime.post_types.find do |post_type|
+          post_type.constantize.type_name == params[:post_type].singularize
+        end
         klass.constantize.all
       else
         BlogPost.where_lang(I18n.locale).primary_feed
@@ -19,7 +21,7 @@ module Storytime
       @posts = Storytime.search_adapter.search(params[:search], get_search_type) if (params[:search] && params[:search].length > 0)
 
       @posts = @posts.tagged_with(params[:tag]) if params[:tag]
-      @posts = @posts.published.order(published_at: :desc).page(params[:page]).per(10)
+      @posts = @posts.published.order(published_at: :desc).page(params[:page]).per(7)
 
       respond_to do |format|
         format.atom
