@@ -5,21 +5,14 @@ module Storytime
     before_action :ensure_site, unless: -> {params[:controller] === 'storytime/dashboard/sites'}
 
     def index
-      @posts = if params[:post_category]
-        category = PostCategory.find_by(slug: params[:post_category])
-        BlogPost.where(post_category: category)
-      elsif params[:post_type]
-        klass = Storytime.post_types.find do |post_type|
-          post_type.constantize.type_name === params[:post_type].singularize
-        end
-        klass.constantize.all
-      else
-        BlogPost.where_lang(I18n.locale).primary_feed
+      if params[:tag].present?
+        @tag = Tag.find_by(name: params[:tag])
+
+        redirect_to blog_posts_path and return if @tag.nil?
       end
 
-      @posts = @posts.tagged_with(params[:tag]) if params[:tag]
-
-      @is_first_page = params[:page].blank? || params[:page] === 1
+      @posts = BlogPost.where_lang(I18n.locale).primary_feed
+      @posts = @posts.tagged_with(@tag.name) if @tag.present?
       @posts = @posts.published.order(published_at: :desc).page(params[:page]).per(7)
     end
 

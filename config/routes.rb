@@ -4,11 +4,11 @@
   get 'subscriptions/unsubscribe', to: 'subscriptions#destroy', as: 'unsubscribe_mailing_list'
 
   namespace :dashboard, :path => Storytime.dashboard_namespace_path do
-    get '/', to: 'blog_posts#index'
+    get '/', to: 'posts#index'
 
     resources :sites, only: [:new, :edit, :update, :create]
 
-    resources :blog_posts do
+    resources :posts do
       resources :autosaves, only: [:create]
     end
 
@@ -25,13 +25,11 @@
     end
   end
 
-  get 'tags/:tag', to: 'blog_posts#index', as: :tag
+  get ':locale/blog/tags/:tag', to: 'blog_posts#index', as: :tag
 
   get Storytime.home_page_path, Storytime.home_page_route_options
-  # resources :blog_posts, {only: :index}.merge(Storytime.post_index_path_options)
 
   scope '/(:locale)', :locale => Storytime::Language.regexp do
-    resources :blog_posts, path: '/blog/:post_category', only: :index
     resources :blog_posts, path: '/blog', only: :index
   end
 
@@ -42,7 +40,7 @@
 
   # pages at routes like /about
   scope '/(:locale)', :locale => Storytime::Language.regexp do
-    constraints ->(request) {
+    constraints -> (request) {
       page_name = request.params[:id]
       (page_name != Storytime.home_page_path) && Storytime::Page.friendly.exists?(page_name)
     } do
