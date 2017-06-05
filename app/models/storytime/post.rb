@@ -163,6 +163,42 @@ module Storytime
       end
     end
 
+    def select_younger_and_older_posts
+      younger_post = self.get_younger_post
+      older_post = self.get_older_post
+
+      if younger_post.nil?
+        [
+          older_post,
+          self.get_older_post(1)
+        ]
+      elsif older_post.nil?
+        [
+          younger_post,
+          self.get_younger_post(1)
+        ]
+      else
+        [
+          younger_post,
+          older_post
+        ]
+      end
+    end
+
+    def get_younger_post(index = 0)
+      younger_posts = Post.where(type: self.type).where('published_at > ?', self.published_at)
+      return nil if younger_posts.nil?
+
+      younger_posts.order(:published_at)[index]
+    end
+
+    def get_older_post(index = 0)
+      older_posts = BlogPost.where(type: self.type).where('published_at < ?', self.published_at)
+      return nil if older_posts.nil?
+
+      older_posts.order(:published_at).reverse[index]
+    end
+
     def self.html_title_character_limit
       HTML_TITLE_CHARACTER_LIMIT
     end

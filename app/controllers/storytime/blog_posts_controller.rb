@@ -1,32 +1,26 @@
 require_dependency 'storytime/application_controller'
 
 module Storytime
-  class PostsController < ApplicationController
+  class BlogPostsController < ApplicationController
     before_action :ensure_site, unless: -> {params[:controller] === 'storytime/dashboard/sites'}
 
     def index
       @posts = if params[:post_category]
-        category = PostCategory.find_by_slug(params[:post_category])
-        @title = category.name
-        BlogPost.where(post_category: category).all
+        category = PostCategory.find_by(slug: params[:post_category])
+        BlogPost.where(post_category: category)
       elsif params[:post_type]
         klass = Storytime.post_types.find do |post_type|
-          post_type.constantize.type_name == params[:post_type].singularize
+          post_type.constantize.type_name === params[:post_type].singularize
         end
         klass.constantize.all
       else
         BlogPost.where_lang(I18n.locale).primary_feed
       end
 
-      @posts = Storytime.search_adapter.search(params[:search], get_search_type) if (params[:search] && params[:search].length > 0)
-
       @posts = @posts.tagged_with(params[:tag]) if params[:tag]
-      @posts = @posts.published.order(published_at: :desc).page(params[:page]).per(7)
 
-      respond_to do |format|
-        format.atom
-        format.html
-      end
+      @is_first_page = params[:page].blank? || params[:page] === 1
+      @posts = @posts.published.order(published_at: :desc).page(params[:page]).per(7)
     end
 
     def show
@@ -54,29 +48,5 @@ module Storytime
         render "storytime/#{@post.type_name.pluralize}/show"
       end
     end
-
-    private
-
-      def get_search_type
-        if params[:type]
-          legal_search_types(params[:type])
-        else
-          Storytime::Post
-        end
-      end
-
-      def legal_search_types(type)
-        begin
-          if Object.const_defined?("Storytime::#{type.camelize}")
-            "Storytime::#{type.camelize}".constantize
-          elsif Object.const_defined?("#{type_name.camelize}")
-            type.camelize.constantize
-          else
-            Storytime::Post
-          end
-        rescue NameError
-          Storytime::Post
-        end
-      end
   end
 end

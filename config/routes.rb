@@ -4,11 +4,11 @@
   get 'subscriptions/unsubscribe', to: 'subscriptions#destroy', as: 'unsubscribe_mailing_list'
 
   namespace :dashboard, :path => Storytime.dashboard_namespace_path do
-    get '/', to: 'posts#index'
+    get '/', to: 'blog_posts#index'
 
     resources :sites, only: [:new, :edit, :update, :create]
 
-    resources :posts do
+    resources :blog_posts do
       resources :autosaves, only: [:create]
     end
 
@@ -25,19 +25,19 @@
     end
   end
 
-  get 'tags/:tag', to: 'posts#index', as: :tag
+  get 'tags/:tag', to: 'blog_posts#index', as: :tag
 
   get Storytime.home_page_path, Storytime.home_page_route_options
-  # resources :posts, {only: :index}.merge(Storytime.post_index_path_options)
+  # resources :blog_posts, {only: :index}.merge(Storytime.post_index_path_options)
 
   scope '/(:locale)', :locale => Storytime::Language.regexp do
-    resources :posts, path: '/blog/:post_category', only: :index
-    resources :posts, path: '/blog', only: :index
+    resources :blog_posts, path: '/blog/:post_category', only: :index
+    resources :blog_posts, path: '/blog', only: :index
   end
 
   # index page for post types that are excluded from primary feed
   constraints ->(request) {Storytime.post_types.any? {|type| type.constantize.type_name.pluralize == request.path.gsub('/', '')}} do
-    get ':post_type', to: 'posts#index'
+    get ':post_type', to: 'blog_posts#index'
   end
 
   # pages at routes like /about
