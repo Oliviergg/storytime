@@ -1,6 +1,7 @@
  Storytime::Engine.routes.draw do
   resources :comments
   resources :subscriptions, only: [:create]
+
   get 'subscriptions/unsubscribe', to: 'subscriptions#destroy', as: 'unsubscribe_mailing_list'
 
   namespace :dashboard, :path => Storytime.dashboard_namespace_path do
