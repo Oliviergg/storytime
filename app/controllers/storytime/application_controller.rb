@@ -1,5 +1,5 @@
 class Storytime::ApplicationController < ApplicationController
-  layout Storytime.layout || "storytime/application"
+  layout Storytime.layout || 'storytime/application'
 
   # include Storytime::Concerns::ControllerContentFor
 
