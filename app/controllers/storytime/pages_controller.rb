@@ -4,6 +4,8 @@ module Storytime
   class PagesController < ApplicationController
     before_action :ensure_site, unless: ->{ params[:controller] == "storytime/dashboard/sites" }
 
+    caches_action :show, unless: :user_signed_in?
+
     def show
       @page = if request.path == "/"
         Page.published.find @site.root_post_id 

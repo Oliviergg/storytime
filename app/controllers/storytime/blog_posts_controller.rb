@@ -2,6 +2,8 @@ module Storytime
   class BlogPostsController < ApplicationController
     before_action :ensure_site, unless: -> {params[:controller] === 'storytime/dashboard/sites'}
 
+    caches_action :index, :show, unless: :user_signed_in?
+
     def index
       if params[:tag].present?
         @tag = Tag.find_by(name: params[:tag])
