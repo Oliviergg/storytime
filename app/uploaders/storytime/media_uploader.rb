@@ -7,8 +7,6 @@ module Storytime
       "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     end
 
-    process optimize: [{ quality: 75 }]
-
     version :thumb do
       process resize_to_fit: [250, 150]
     end
@@ -17,8 +15,16 @@ module Storytime
       process resize_to_fit: [50, 50]
     end
 
+    version :home_blog_post_header do
+      process convert: 'jpg'
+      process resize_to_fill: [350, 150]
+      process optimize: [{ quality: 75 }]
+    end
+
     version :blog_post_header do
+      process convert: 'jpg'
       process resize_to_fill: [750, 320]
+      process optimize: [{ quality: 75 }]
     end
   end
 end
