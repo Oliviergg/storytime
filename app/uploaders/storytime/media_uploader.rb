@@ -1,12 +1,13 @@
 module Storytime
   class MediaUploader < CarrierWave::Uploader::Base
+    include CarrierWave::ImageOptimizer
     include CarrierWave::MiniMagick
 
     def store_dir
       "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     end
 
-    # Default resizes
+    process :optimize
 
     version :thumb do
       process resize_to_fit: [250, 150]
@@ -15,8 +16,6 @@ module Storytime
     version :tiny do
       process resize_to_fit: [50, 50]
     end
-
-    # Blog's posts' headers' images' resize
 
     version :blog_post_header do
       process resize_to_fill: [750, 320]

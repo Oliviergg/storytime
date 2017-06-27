@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
   s.test_files =                  Dir['spec/**/*'] - Dir['spec/dummy/tmp/**/*'] - Dir['spec/dummy/log/*'] - Dir['spec/dummy/public/uploads/**/*']
 
   s.add_dependency                'bootstrap-sass', '>= 3.1'
+  s.add_dependency                'carrierwave-imageoptimizer'
   s.add_dependency                'carrierwave', '>= 0.9'
   s.add_dependency                'coffee-rails', '>= 4.0'
   s.add_dependency                'fog-aws'
