@@ -7,7 +7,7 @@ module Storytime
       "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
     end
 
-    process :optimize
+    process optimize: [{ quality: 75 }]
 
     version :thumb do
       process resize_to_fit: [250, 150]
