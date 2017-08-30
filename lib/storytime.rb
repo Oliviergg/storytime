@@ -1,8 +1,8 @@
-require "storytime/engine"
-require "storytime/mysql_search_adapter"
-require "storytime/mysql_fulltext_search_adapter"
-require "storytime/postgres_search_adapter"
-require "storytime/sqlite3_search_adapter"
+require 'storytime/engine'
+require 'storytime/mysql_search_adapter'
+require 'storytime/mysql_fulltext_search_adapter'
+require 'storytime/postgres_search_adapter'
+require 'storytime/sqlite3_search_adapter'
 
 module Storytime
   # Model to use for Storytime users.
@@ -12,18 +12,18 @@ module Storytime
   # Path of Storytime's dashboard, relative to
   # Storytime's mount point within the host app.
   mattr_accessor :dashboard_namespace_path
-  @@dashboard_namespace_path = "/storytime"
+  @@dashboard_namespace_path = '/storytime'
 
   # Path of Storytime's home page, relative to
   # Storytime's mount point within the host app.
   mattr_accessor :home_page_path
-  @@home_page_path = "/"
+  @@home_page_path = '/'
 
-  # Path used to sign users in. 
+  # Path used to sign users in.
   mattr_accessor :login_path
   @@login_path = '/users/sign_in'
 
-  # Path used to log users out. 
+  # Path used to log users out.
   mattr_accessor :logout_path
   @@logout_path = '/users/sign_out'
 
@@ -45,14 +45,14 @@ module Storytime
 
   # Array of tags to allow from the Summernote WYSIWYG
   # Editor when editing Posts and custom post types.
-  # An empty array, "", or nil setting will permit all tags.
+  # An empty array, '', or nil setting will permit all tags.
   mattr_accessor :whitelisted_post_html_tags
   @@whitelisted_post_html_tags = []
 
   # Enable Disqus comments using your forum's shortname,
   # the unique identifier for your website as registered on Disqus.
   mattr_accessor :disqus_forum_shortname
-  @@disqus_forum_shortname = ""
+  @@disqus_forum_shortname = ''
 
   # Email regex used to validate email format validity for subscriptions.
   mattr_accessor :email_regexp
@@ -60,7 +60,7 @@ module Storytime
 
   # Email address of the sender of subscription emails.
   mattr_accessor :subscription_email_from
-  @@subscription_email_from = "no-reply@example.com"
+  @@subscription_email_from = 'no-reply@example.com'
 
   # Search adapter to use for searching through Storytime Posts or
   # Post subclasses. Options for the search adapter include:
@@ -71,7 +71,7 @@ module Storytime
 
   class << self
     attr_accessor :layout, :media_storage, :s3_bucket, :post_types
-    
+
     def configure
       self.post_types ||= []
 
@@ -87,7 +87,7 @@ module Storytime
     end
 
     def user_class_underscore_all
-      @@user_class.underscore.gsub('/', '_')
+      @@user_class.underscore.tr('/', '_')
     end
 
     def user_class_symbol
@@ -96,12 +96,12 @@ module Storytime
 
     def snippet(name)
       snippet = Storytime::Snippet.find_by(name: name)
-      snippet.nil? ? "" : snippet.content.html_safe
+      snippet.nil? ? '' : snippet.content.html_safe
     end
 
     def snippet_lang(name,lang)
       snippet = Storytime::Snippet.find_by(language_id: Storytime::Language.find_by(lang:lang),name: name)
-      snippet.nil? ? "" : snippet.content.html_safe
+      snippet.nil? ? '' : snippet.content.html_safe
     end
 
 
@@ -109,20 +109,20 @@ module Storytime
       site = Storytime::Site.first if ActiveRecord::Base.connection.table_exists? 'storytime_sites'
 
       if site
-        if site.root_page_content == "page"
-          { to: "pages#show", as: :storytime_root_post }
+        if site.root_page_content == 'page'
+          { to: 'pages#show', as: :storytime_root_post }
         else
-          { to: "posts#index", as: :storytime_root_post }
+          { to: 'posts#index', as: :storytime_root_post }
         end
       else
-        { to: "application#setup", as: :storytime_root }
+        { to: 'application#setup', as: :storytime_root }
       end
     end
 
     def post_index_path_options
       site = Storytime::Site.first if ActiveRecord::Base.connection.table_exists? 'storytime_sites'
 
-      if site && site.root_page_content == "posts"
+      if site && site.root_page_content == 'posts'
         { path: Storytime.home_page_path }
       else
         {}
