@@ -16,7 +16,7 @@ module Storytime
       @blog_posts = @blog_posts.tagged_with(@tag.name) if @tag.present?
       @blog_posts = @blog_posts.published.order(published_at: :desc).page(params[:page]).per(7)
 
-      return redirect_to(blog_posts_path, status: 302) if @blog_posts.count.zero?
+      return redirect_to(blog_posts_path, status: 410) if @blog_posts.count.zero?
     end
 
     def show
