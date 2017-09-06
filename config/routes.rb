@@ -39,7 +39,7 @@ Storytime::Engine.routes.draw do
   scope '/(:locale)', locale: Storytime::Language.regexp do
     constraints ->(request) {
       page_name = request.params[:id]
-      (page_name != Storytime.home_page_path) && Storytime::Page.friendly.exist?(page_name)
+      (page_name != Storytime.home_page_path) && Storytime::Page.friendly.exists?(page_name)
     } do
       get '/:category/:id', to: 'pages#show'
     end
