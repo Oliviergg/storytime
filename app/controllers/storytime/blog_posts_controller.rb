@@ -22,7 +22,7 @@ module Storytime
     def show
       @blog_post = BlogPost.find_by(slug: params[:slug])
 
-      return redirect_to blog_posts_path if @blog_post.nil?
+      return redirect_to(blog_posts_path, status: 301) if @blog_post.nil?
       authorize @blog_post
 
       @other_posts = @blog_post.select_younger_and_older_posts

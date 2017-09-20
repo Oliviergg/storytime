@@ -1,3 +1,3 @@
 module Storytime
-  VERSION = '1.2.8'
+  VERSION = '1.2.9'
 end
